@@ -299,4 +299,9 @@ public class stock {
 		table = new JTable();
 		table_1.setViewportView(table);
 	}
+
+	public void setVisible(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
 }
