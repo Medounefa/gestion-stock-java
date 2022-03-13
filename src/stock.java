@@ -21,6 +21,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.JTextArea;
+import java.awt.BorderLayout;
+import javax.swing.JTabbedPane;
 
 public class stock {
 
@@ -55,11 +58,15 @@ public class stock {
 	public stock() {
 		initialize();
 		connect();
+		table_med();
 		table_load();
+		table_F();
 	}
 	Connection con;
 	PreparedStatement pst;
     ResultSet rs;
+    private JTable table_2;
+    private JTable table_3;
    
 	
 	
@@ -78,9 +85,9 @@ public class stock {
 	}
 
 	
-	public void table_load() {
+	public void table_med() {
 		try {
-			pst = con.prepareStatement("select * from produit");
+			pst = con.prepareStatement("SELECT * FROM produit");
 			rs = pst.executeQuery();
 			table.setModel(DbUtils.resultSetToTableModel(rs));
 			
@@ -88,16 +95,41 @@ public class stock {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		
+		}	
+	
+	}
+	public void table_load() {
+		try {
+			pst = con.prepareStatement("SELECT nom, quantite FROM produit");
+			rs = pst.executeQuery();
+			table_2.setModel(DbUtils.resultSetToTableModel(rs));
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	
+	}
+	public void table_F() {
+		try {
+			pst = con.prepareStatement("SELECT fournisseur, quantite FROM produit");
+			rs = pst.executeQuery();
+			table_3.setModel(DbUtils.resultSetToTableModel(rs));
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	
 	}
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(300, 200, 850, 505);
+		frame.setBounds(300, 200, 1277, 788);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -137,6 +169,8 @@ public class stock {
 		frame.getContentPane().add(fournisseur);
 		
 		JButton valide = new JButton("Valider");
+		valide.setForeground(new Color(0, 0, 0));
+		valide.setBackground(new Color(0, 128, 0));
 		valide.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -156,8 +190,8 @@ public class stock {
 					pst.setString(3, fourni);
 					pst.executeUpdate();
 					JOptionPane.showMessageDialog(null, "Insertion reussite");
+					table_med();
 					table_load();
-					
 					nomprod.setText("");
 					qt.setText("");
 					fournisseur.setText("");
@@ -231,7 +265,7 @@ public class stock {
 					pst.setString(4, prodId);
 					pst.executeUpdate();
 					JOptionPane.showMessageDialog(null, "Insertion reussite");
-					table_load();
+					table_med();
 					
 					nomprod.setText("");
 					qt.setText("");
@@ -276,7 +310,7 @@ public class stock {
 					pst.setString(1, idpro);
 					pst.executeUpdate();
 					JOptionPane.showMessageDialog(null, "Record delete");
-					table_load();
+					table_med();
 					nomprod.setText("");
 					qt.setText("");
 					fournisseur.setText("");
@@ -298,6 +332,26 @@ public class stock {
 		
 		table = new JTable();
 		table_1.setViewportView(table);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(869, 84, 315, 288);
+		frame.getContentPane().add(tabbedPane);
+		
+		JPanel test = new JPanel();
+		tabbedPane.addTab("Produit", null, test, null);
+		test.setLayout(null);
+		
+		table_2 = new JTable();
+		table_2.setBounds(10, 11, 290, 238);
+		test.add(table_2);
+		
+		JPanel panel_1 = new JPanel();
+		tabbedPane.addTab("Fournisseur", null, panel_1, null);
+		panel_1.setLayout(null);
+		
+		table_3 = new JTable();
+		table_3.setBounds(10, 11, 290, 238);
+		panel_1.add(table_3);
 	}
 
 	public void setVisible(boolean b) {
